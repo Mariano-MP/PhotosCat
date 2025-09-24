@@ -5,13 +5,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,7 +40,7 @@ fun HomeScreen(
                ){
     when( catUiState){
         is CatUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
-        is CatUiState.Success ->CatPhotoCard(catUiState.photos,modifier=modifier.fillMaxSize())
+        is CatUiState.Success ->PhotosGridScreen(catUiState.photos,modifier=modifier.fillMaxSize())
         is CatUiState.Error -> ErrorScreen(modifier =  modifier.fillMaxSize())
 
     }
@@ -47,9 +54,39 @@ fun CatPhotoCard(photo: CatPhoto, modifier: Modifier){
             .crossfade(true)
             .build(),
         contentDescription = stringResource(R.string.cat_image),
-        modifier = modifier
+        modifier = modifier,
+        error = painterResource(R.drawable.error_404),
+        placeholder = painterResource(R.drawable.carga),
+        contentScale = ContentScale.Fit
     )
 }
+
+
+@Composable
+fun PhotosGridScreen(
+    photos: List<CatPhoto>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
+){
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(150.dp),
+        modifier = modifier.padding(horizontal = 4.dp),
+        contentPadding = contentPadding
+    ) {
+        items(
+            items = photos,
+            key = {photo -> photo.id}
+        ){
+            photo -> CatPhotoCard(photo = photo,
+                modifier = modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .aspectRatio(1.5f)
+            )
+        }
+    }
+}
+
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier){
     Box(modifier = modifier,
