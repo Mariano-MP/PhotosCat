@@ -12,11 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.mexiti.catphotoapp.R
+import com.mexiti.catphotoapp.model.CatPhoto
 import com.mexiti.catphotoapp.viewmodel.CatUiState
 
 
@@ -29,11 +33,22 @@ fun HomeScreen(
                ){
     when( catUiState){
         is CatUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
-        is CatUiState.Success ->ResultScreen( photos = catUiState.photos,
-            modifier = modifier.fillMaxWidth())
+        is CatUiState.Success ->CatPhotoCard(catUiState.photos,modifier=modifier.fillMaxSize())
         is CatUiState.Error -> ErrorScreen(modifier =  modifier.fillMaxSize())
 
     }
+}
+
+@Composable
+fun CatPhotoCard(photo: CatPhoto, modifier: Modifier){
+    AsyncImage(
+        model = ImageRequest.Builder(context = LocalContext.current)
+            .data(photo.url)
+            .crossfade(true)
+            .build(),
+        contentDescription = stringResource(R.string.cat_image),
+        modifier = modifier
+    )
 }
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier){
@@ -67,6 +82,7 @@ fun ErrorScreen(modifier: Modifier = Modifier){
     }
 }
 
+/*
 @Preview
 @Composable
 fun HomeScreenPreview(){
@@ -76,4 +92,4 @@ fun HomeScreenPreview(){
         HomeScreen(catUiState = CatUiState.Success("photos"))
      }
 
-}
+}*/
