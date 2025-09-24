@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,17 +50,22 @@ fun HomeScreen(
 
 @Composable
 fun CatPhotoCard(photo: CatPhoto, modifier: Modifier){
-    AsyncImage(
-        model = ImageRequest.Builder(context = LocalContext.current)
-            .data(photo.url)
-            .crossfade(true)
-            .build(),
-        contentDescription = stringResource(R.string.cat_image),
-        modifier = modifier,
-        error = painterResource(R.drawable.error_404),
-        placeholder = painterResource(R.drawable.carga),
-        contentScale = ContentScale.Fit
-    )
+    Card(
+        modifier =  modifier,
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(photo.url)
+                .crossfade(true)
+                .build(),
+            contentDescription = stringResource(R.string.cat_image),
+            modifier = modifier,
+            error = painterResource(R.drawable.error_404),
+            placeholder = painterResource(R.drawable.carga),
+            contentScale = ContentScale.Fit
+        )
+    }
 }
 
 
@@ -69,7 +76,7 @@ fun PhotosGridScreen(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ){
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(150.dp),
+        columns = GridCells.Adaptive(200.dp),
         modifier = modifier.padding(horizontal = 4.dp),
         contentPadding = contentPadding
     ) {
